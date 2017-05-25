@@ -30,9 +30,13 @@ gulp.task('css', () => {
 gulp.task('babel', () => {
   return gulp.src(jsFiles)
     .pipe(babel())
+    .on('error', function(e) {
+      console.log('ERROR!: ', e);
+      this.emit('end');
+    })
     .pipe(concat('scripts.js'))
+    // Can minify output
     // .pipe(minify())
-    .on('error', console.log)
     .pipe(gulp.dest('js'));
 });
 
@@ -61,7 +65,8 @@ gulp.task('serve', () => {
       baseDir: siteRoot
     }
   });
-  gulp.watch(cssFiles, ['css']);
+  gulp.watch(cssFiles,  ['css']);
+  gulp.watch(jsFiles,   ['babel']);
 });
 
 gulp.task('jekyllProduce', (done) => {
